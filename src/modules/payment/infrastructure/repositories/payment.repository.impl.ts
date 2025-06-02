@@ -10,8 +10,7 @@ export class PaymentRepositoryImpl implements PaymentRepository {
     constructor(
         @InjectRepository(PaymentEntity)
         private readonly model: Repository<PaymentEntity>,
-    ) {
-    }
+    ) {}
 
     async save(payment: Payment): Promise<void> {
         await this.model.save({
