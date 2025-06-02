@@ -10,3 +10,17 @@ export class CreatePaymentDto {
     @Min(1)
     amount: number;
 }
+
+export class CreateUserDto {
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+
+    @IsNotEmpty()
+    @IsString()
+    email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    password: string;
+}
