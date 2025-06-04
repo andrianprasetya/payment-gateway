@@ -1,6 +1,6 @@
 import {DeletePaymentUseCase} from "../src/modules/payment/application/use-cases/delete-payment.use-case";
 import {PaymentRepository} from "../src/modules/payment/domain/repositories/payment.repository";
-import {Payment} from "../src/modules/payment/domain/entities/payment.entity";
+import {Payment} from "../src/modules/payment/domain/entities/transaction.entity";
 
 describe('DeletePaymentUseCase', () => {
     let useCase: DeletePaymentUseCase;

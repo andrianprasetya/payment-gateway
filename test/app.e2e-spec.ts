@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { Payment } from '../src/modules/payment/domain/entities/payment.entity';
+import { Payment } from '../src/modules/payment/domain/entities/transaction.entity';
 
 describe('PaymentController (e2e)', () => {
   let app: INestApplication;

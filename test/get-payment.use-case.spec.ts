@@ -1,5 +1,5 @@
 import {GetPaymentUseCase} from "../src/modules/payment/application/use-cases/get-payment.use-case";
-import {Payment} from "../src/modules/payment/domain/entities/payment.entity";
+import {Payment} from "../src/modules/payment/domain/entities/transaction.entity";
 
 describe('GetPaymentUseCase', () => {
     let useCase: GetPaymentUseCase;

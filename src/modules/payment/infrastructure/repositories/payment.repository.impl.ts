@@ -2,29 +2,24 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {PaymentRepository} from '../../domain/repositories/payment.repository';
-import {Payment, PaymentEntity} from '../../domain/entities/payment.entity';
+import {TransactionEntity} from '../../domain/entities/transaction.entity';
 
 
 @Injectable()
 export class PaymentRepositoryImpl implements PaymentRepository {
     constructor(
-        @InjectRepository(PaymentEntity)
-        private readonly model: Repository<PaymentEntity>,
+        @InjectRepository(TransactionEntity)
+        private readonly model: Repository<TransactionEntity>,
     ) {}
 
-    async save(payment: Payment): Promise<void> {
-        await this.model.save({
-            id: payment.id,
-            orderId: payment.orderId,
-            amount: payment.amount,
-            status: payment.status,
-        });
+    async save(transaction: TransactionEntity): Promise<void> {
+        await this.model.save(transaction);
     }
 
-    async findById(id: string): Promise<Payment | null> {
+    async findById(id: string): Promise<TransactionEntity | null> {
         const entity = await this.model.findOne({where: {id}});
         if (!entity) return null;
-        return new Payment(entity.id, entity.orderId, entity.amount, entity.status as any);
+        return new TransactionEntity(entity);
     }
 
     async delete(id: string): Promise<void> {

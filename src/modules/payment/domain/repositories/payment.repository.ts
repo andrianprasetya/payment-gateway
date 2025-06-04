@@ -1,7 +1,9 @@
-import {Payment} from "../entities/payment.entity";
+import {TransactionEntity} from "../entities/transaction.entity";
 
 export interface PaymentRepository {
-    save(payment: Payment): Promise<void>;
-    findById(id: string): Promise<Payment | null>;
+    save(payment: TransactionEntity): Promise<void>;
+
+    findById(id: string): Promise<TransactionEntity | null>;
+
     delete(id: string): Promise<void>;
 }

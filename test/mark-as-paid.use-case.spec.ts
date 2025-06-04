@@ -1,6 +1,6 @@
 import {MarkAsPaidUseCase} from "../src/modules/payment/application/use-cases/mark-as-paid.use-case";
 import {PaymentRepository} from "../src/modules/payment/domain/repositories/payment.repository";
-import {Payment} from "../src/modules/payment/domain/entities/payment.entity";
+import {Payment} from "../src/modules/payment/domain/entities/transaction.entity";
 
 describe('MarkAsPaidUseCase', () => {
     let useCase: MarkAsPaidUseCase;

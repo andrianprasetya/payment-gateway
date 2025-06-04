@@ -1,13 +1,14 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import { Redis } from 'ioredis'
-import { OauthClientEntity } from './entities/oauth-client.entity';
-import {Injectable} from "@nestjs/common";
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {InjectRedis} from '@nestjs-modules/ioredis';
+import {Redis} from 'ioredis'
+import {OauthClientEntity} from './entities/oauth-client.entity';
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {ConfigService} from "@nestjs/config";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import * as jwt from 'jsonwebtoken';
 import {randomBytes} from "crypto";
+import {GenerateTokenResponseDto} from "./dto/response/generate-token-response.dto";
 
 @Injectable()
 export class OauthService {
@@ -16,21 +17,24 @@ export class OauthService {
         private readonly repo: Repository<OauthClientEntity>,
         private config: ConfigService,
         @InjectRedis() private readonly redis: Redis,
-    ) {}
+    ) {
+    }
 
-    getSecret():string {
+    getSecret(): string {
         return this.config.get<string>('JWT_SECRET') || 'default-secret';
     }
 
-    async generateToken(client_id: string, client_secret: string): Promise<string | null> {
-        const client = await this.repo.findOneBy({ client_id, client_secret });
-        if (!client) return null;
+    async generateToken(client_id: string, client_secret: string): Promise<GenerateTokenResponseDto | null> {
+        const client = await this.repo.findOneBy({id: client_id, client_secret});
+        if (!client) {
+            throw new UnauthorizedException('Invalid client credentials');
+        }
 
-        const payload = { sub: client.client_id };
-        const token = jwt.sign(payload, this.getSecret(), { expiresIn: '1h' });
-
+        const payload = {sub: client.id};
+        const token = jwt.sign(payload, this.getSecret(), {expiresIn: '1h'});
         await this.redis.set(`access_token:${token}`, JSON.stringify(payload), 'EX', 3600);
-        return token;
+
+        return new GenerateTokenResponseDto({access_token: token, token_type: 'Bearer', expires_in: 3600});
     }
 
     async verifyToken(token: string): Promise<any> {
@@ -50,7 +54,7 @@ export class OauthService {
         const client_id = uuidv4();
         const client_secret = randomBytes(32).toString('hex');
         const client = this.repo.create(
-            { client_id, client_secret, name }
+            {client_id, client_secret, name}
         );
         return await this.repo.save(client);
     }
@@ -61,16 +65,16 @@ export class OauthService {
             const cached = await this.redis.get(`access_token:${token}`);
             if (cached) {
                 const payload = JSON.parse(cached);
-                return { active: true, ...payload };
+                return {active: true, ...payload};
             }
 
             const payload = jwt.verify(token, this.getSecret());
             if (typeof payload === 'object' && payload !== null) {
-                return { active: true, ...payload };
+                return {active: true, ...payload};
             }
-            return { active: false };
+            return {active: false};
         } catch (e) {
-            return { active: false };
+            return {active: false};
         }
     }
 }
