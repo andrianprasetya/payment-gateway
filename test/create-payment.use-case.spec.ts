@@ -1,9 +1,9 @@
 import { CreatePaymentUseCase } from '../src/modules/payment/application/use-cases/create-payment.use-case';
-import { PaymentRepository } from '../src/modules/payment/domain/repositories/payment.repository';
+import { TransactionRepositoryInterface } from '../src/modules/payment/domain/transaction.repository.interface';
 
 describe('CreatePaymentUseCase', () => {
     let useCase: CreatePaymentUseCase;
-    let repo: jest.Mocked<PaymentRepository>;
+    let repo: jest.Mocked<TransactionRepositoryInterface>;
 
     beforeEach(() => {
         repo = {

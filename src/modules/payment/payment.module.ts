@@ -1,27 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PaymentController } from './interfaces/controllers/payment.controller';
-import { PaymentRepositoryImpl } from './infrastructure/repositories/payment.repository.impl';
+import { TransactionController } from './interfaces/controllers/transaction.controller';
+import { TransactionRepositoryImpl } from './infrastructure/transaction.repository';
 import {
-    CreatePaymentUseCase,
-    GetPaymentUseCase,
-    DeletePaymentUseCase,
-    MarkAsPaidUseCase
-} from './application/use-cases/payment.use-case';
-import { TransactionEntity } from './domain/entities/transaction.entity';
+    TransactionService
+} from './application/transaction.service';
+import {TransactionEntityOrm} from './infrastructure/transaction.entity.orm';
 import {AuthModule} from "../../auth/oauth.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([TransactionEntity,UserEntity]),AuthModule],
-    controllers: [PaymentController,UserController],
+    imports: [TypeOrmModule.forFeature([TransactionEntityOrm]),AuthModule],
+    controllers: [TransactionController],
     providers: [
-        CreatePaymentUseCase,
-        GetPaymentUseCase,
-        MarkAsPaidUseCase,
-        DeletePaymentUseCase,
+        TransactionService,
         {
-            provide: 'PaymentRepository',
-            useClass: PaymentRepositoryImpl,
+            provide: 'TransactionRepository',
+            useClass: TransactionRepositoryImpl,
         },
 
 

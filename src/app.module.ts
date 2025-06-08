@@ -5,6 +5,7 @@ import {PaymentModule} from './modules/payment/payment.module';
 import {ConfigModule} from '@nestjs/config';
 import {AuthModule} from './auth/oauth.module';
 import {RedisModule} from "./redis/redis.module";
+import {CommandModule} from "./command/command.module";
 
 
 @Module({
@@ -18,11 +19,12 @@ import {RedisModule} from "./redis/redis.module";
             database: 'payment_db',
             synchronize: true,
             entities: [
-                __dirname + '/modules/**/*.entity.{ts,js}',
-                __dirname + '/auth/**/*.entity.{ts,js}'
+                __dirname + '/modules/**/*.entity.orm.{ts,js}',
+                __dirname + '/auth/**/*.entity.orm.{ts,js}'
             ],
         }),
         RedisModule,
+        CommandModule,
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: '.env',
