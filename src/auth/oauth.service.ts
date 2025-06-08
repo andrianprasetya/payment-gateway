@@ -61,6 +61,11 @@ export class OauthService {
             throw new UnauthorizedException('Invalid client credentials');
         }
 
+        const cached = await this.redis.get(`access_token:${client.id}`);
+        if (!cached) {
+            return new GenerateTokenResponseDto(cached)
+        }
+
         const payload = {
             id: client.id,
             client_id: client.client_id,
